@@ -6,7 +6,7 @@ from skimage.io import imread
 import random as pif
 from sklearn.linear_model import LogisticRegression
 from Tools.mytoolsbox import calc_desc_histogramme, training_process_and_eval, afficher_confmat
-from Tools.setup_env import DATA_PATH
+from Tools.setup import DATA_PATH
 
 # Start script
 rand_seed = 42

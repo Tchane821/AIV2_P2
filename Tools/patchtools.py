@@ -7,7 +7,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.cluster import KMeans
 from pickle import dump, load as load_pkl
 from numpy import zeros, asarray, save, load
-from Tools.setup_env import EXPORT_DATA_PATH, EXPORT_MODELE_PATH, EXPORT_PATCHES_PATH, \
+from Tools.setup import EXPORT_DATA_PATH, EXPORT_MODELE_PATH, EXPORT_PATCHES_PATH, \
     EXPORT_SCALER_PATH, EXPORT_DATA_HARD, EXPORT_DATA_SOFT, EXPORT_DATA_CONV
 from Tools.mytoolsbox import get_sub_array, progressbar
 

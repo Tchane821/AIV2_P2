@@ -1,5 +1,5 @@
 import os
-from Tools.setup_env import DATA_PATH, EXPORT_PATCHES_PATH
+from Tools.setup import DATA_PATH, EXPORT_PATCHES_PATH
 
 from Tools.mytoolsbox import path_file_to_colorset
 from Tools.patchtools import compute_and_save_patches, kmeans_save_from_patches

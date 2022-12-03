@@ -1,6 +1,6 @@
 from Tools.mytoolsbox import path_file_to_colorset
 from Tools.patchtools import compute_and_save_allpatches_with_out_cover
-from Tools.setup_env import DATA_PATH
+from Tools.setup import DATA_PATH
 
 random_state = 42
 noi = 1000

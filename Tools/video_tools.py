@@ -6,7 +6,7 @@ from skimage.registration import optical_flow_tvl1
 from skimage.color import rgb2gray
 
 from Tools.mytoolsbox import calc_desc_histogramme, progressbar
-from Tools.setup_env import DATA_VIDEO_PATH, RAND_SEED
+from Tools.setup import DATA_VIDEO_PATH, RAND_SEED
 from numpy import zeros
 import random as pif
 

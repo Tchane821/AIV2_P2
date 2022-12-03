@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 from Tools.mytoolsbox import path_file_to_greyset, calc_dts_sift, afficher_n_images_keypoints
-from Tools.setup_env import DATA_PATH
+from Tools.setup import DATA_PATH
 
 noi = 100  # number of images min 100 max 1000
 

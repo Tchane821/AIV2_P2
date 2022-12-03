@@ -1,7 +1,7 @@
 from sklearn.neural_network import MLPClassifier
 
 
-from Tools.setup_env import DATA_VIDEO_PATH, RAND_SEED
+from Tools.setup import DATA_VIDEO_PATH, RAND_SEED
 from Tools.video_tools import path_file_to_video_datasets_histiavg
 from mytoolsbox import training_process_and_eval, afficher_confmat
 

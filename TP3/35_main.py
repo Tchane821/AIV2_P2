@@ -1,6 +1,6 @@
 import os
 
-from Tools.setup_env import EXPORT_DATA_PATH
+from Tools.setup import EXPORT_DATA_PATH
 
 from Tools.patchtools import soft_assignment
 # from Tools.patchtools import hard_assignment

@@ -1,6 +1,6 @@
 from sklearn.linear_model import LogisticRegression
 from Tools.mytoolsbox import path_file_to_greyset, training_process_and_eval, afficher_confmat, calc_dts_sacmotsvisuels
-from Tools.setup_env import DATA_PATH, VOCAB_PATH
+from Tools.setup import DATA_PATH, VOCAB_PATH
 
 # Start script
 rand_seed = 42

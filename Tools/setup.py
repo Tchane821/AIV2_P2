@@ -26,8 +26,14 @@ dirs_to_create = [
     VOCAB_PATH
 ]
 
-for d in dirs_to_create:
-    try:
-        mkdir(d)
-    except FileExistsError:
-        print(f"{d} existe déjà.")
+
+def run():
+    for d in dirs_to_create:
+        try:
+            mkdir(d)
+        except FileExistsError:
+            print(f"{d} existe déjà.")
+
+
+if __name__ == '__main__':
+    run()
