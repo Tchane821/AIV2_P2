@@ -8,6 +8,7 @@ EXPORT_DATA_PATH = f"{EXPORT_GLOBAL_PATH}/caltech101_subset_patche"
 EXPORT_DATA_HARD = f"{EXPORT_GLOBAL_PATH}/tp3_hard"
 EXPORT_DATA_SOFT = f"{EXPORT_GLOBAL_PATH}/tp3_soft"
 EXPORT_DATA_CONV = f"{EXPORT_GLOBAL_PATH}/tp3_conv"
+EXPORT_DATA_FLUXOPT = f"{EXPORT_GLOBAL_PATH}/tp4_flux_optic"
 DATA_PATH = "../02_caltech101_subset"
 VOCAB_PATH = "../03_vocabulary_sift"
 DATA_VIDEO_PATH = "../04_data_videos"
@@ -22,6 +23,7 @@ dirs_to_create = [
     EXPORT_DATA_HARD,
     EXPORT_DATA_SOFT,
     EXPORT_DATA_CONV,
+    EXPORT_DATA_FLUXOPT,
     DATA_PATH,
     VOCAB_PATH
 ]
