@@ -2,12 +2,12 @@ import os
 
 import matplotlib.pyplot as plt
 
-from setup import DATA_VIDEO_PATH
+from setup import DATA_VIDEO_1_PATH
 from video_tools import calc_opticalflux, conv_optical_flux_2_hsv, conv_fo_hsv_2_fo_rgb, save_video_numpyarray, \
     afficher_image_k
 from numpy import load
 
-listed_video_path = os.listdir(DATA_VIDEO_PATH)
+listed_video_path = os.listdir(DATA_VIDEO_1_PATH)
 
 for k in range(len(listed_video_path)):
     print(f"\n ----- Log: IMG {k + 1} / {len(listed_video_path)}: in progress... -----")

@@ -1,12 +1,12 @@
 from sklearn.neural_network import MLPClassifier
 
 
-from Tools.setup import DATA_VIDEO_PATH, RAND_SEED
+from Tools.setup import DATA_VIDEO_1_PATH, RAND_SEED
 from Tools.video_tools import path_file_to_video_datasets_histiavg
 from mytoolsbox import training_process_and_eval, afficher_confmat
 
 print("Log: calcule des descripteurs: in progress...")
-dataset, classes, files_name = path_file_to_video_datasets_histiavg(DATA_VIDEO_PATH)
+dataset, classes, files_name = path_file_to_video_datasets_histiavg(DATA_VIDEO_1_PATH)
 print()
 print("Log: calcule des descripteurs: done!")
 

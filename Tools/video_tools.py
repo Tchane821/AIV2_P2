@@ -7,8 +7,8 @@ from skimage.registration import optical_flow_tvl1
 from skimage.color import rgb2gray, hsv2rgb
 
 from Tools.mytoolsbox import calc_desc_histogramme, progressbar
-from Tools.setup import DATA_VIDEO_PATH, RAND_SEED, EXPORT_DATA_FLUXOPT
-from numpy import zeros, empty, arctan2, pi, asarray, save
+from Tools.setup import DATA_VIDEO_1_PATH, RAND_SEED, EXPORT_DATA_FLUXOPT
+from numpy import zeros, empty, arctan2, pi, asarray, save, linalg
 from math import sqrt, pow
 import random as pif
 
@@ -45,7 +45,7 @@ def calc_desc_avg_histogrames(path_video) -> []:
 
 
 def calc_frames_histogramlmmes(path_video) -> []:
-    video = vread(f"{DATA_VIDEO_PATH}/{path_video}")
+    video = vread(f"{DATA_VIDEO_1_PATH}/{path_video}")
     res = [calc_desc_histogramme(f) for f in video]
     return res
 
@@ -102,7 +102,7 @@ def conv_optical_flux_2_hsv(optflx):
 
 
 def calc_opticalflux(path_video) -> []:
-    video_color = vread(f"{DATA_VIDEO_PATH}/{path_video}")
+    video_color = vread(f"{DATA_VIDEO_1_PATH}/{path_video}")
     video_wb = [rgb2gray(i) for i in video_color]
 
     def opf_pb(k):
@@ -124,3 +124,27 @@ def my_reshape(raw_optical_flux):
                         idx_image, idx_tuple, idx_ligne, idx_colo]
     print("\tLog: Reshape: done!")
     return optf
+
+
+# TP4 PARTIE 3 FO ORIENTATIONS ET MAGNITUDE ----------------------------------------------------------------------------
+
+def calc_fo_2_tuple(optflx):
+    flo_om = zeros((optflx.shape[0], optflx.shape[1], optflx.shape[2], 3), 'int8')
+    flo_om[..., 0] = (arctan2(optflx[..., 1], optflx[..., 0]) / pi * 180. + 180.).astype(int)
+    flo_om[..., 1] = linalg.norm(optflx, axis=3, ord=2).astype(int)
+    return flo_om
+
+
+def extract_firstmagn_perclass():
+    pass
+
+
+# TP5 PARTIE 2 CLASSIFICATION ------------------------------------------------------------------------------------------
+
+
+def calc_vecteur_freq_hoghof(path_file, path_vocab):
+    pass
+
+
+def afficher_video_keypoint(path_file):
+    pass

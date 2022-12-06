@@ -11,7 +11,10 @@ EXPORT_DATA_CONV = f"{EXPORT_GLOBAL_PATH}/tp3_conv"
 EXPORT_DATA_FLUXOPT = f"{EXPORT_GLOBAL_PATH}/tp4_flux_optic"
 DATA_PATH = "../02_caltech101_subset"
 VOCAB_PATH = "../03_vocabulary_sift"
-DATA_VIDEO_PATH = "../04_data_videos"
+DATA_VIDEO_1_PATH = "../04_data_videos/video_1"
+DATA_VIDEO_2_PATH = "../04_data_videos/video_2/videos"
+DATA_VIDEO_2_KEY_PATH = "../04_data_videos/video_2/keypoints"
+DATA_VIDEO_2_VOC_PATH = "../04_data_videos/video_2/visual_vocabularies"
 RAND_SEED = 42
 
 dirs_to_create = [
