@@ -2,19 +2,23 @@ import math
 import os
 
 import matplotlib.pyplot as plt
+from sklearn.cluster import KMeans
 from skvideo.io import vread
 from skimage.registration import optical_flow_tvl1
 from skimage.color import rgb2gray, hsv2rgb
 
 from Tools.mytoolsbox import calc_desc_histogramme, progressbar
-from Tools.setup import DATA_VIDEO_1_PATH, RAND_SEED, EXPORT_DATA_FLUXOPT
-from numpy import zeros, empty, arctan2, pi, asarray, save, linalg
+from Tools.setup import DATA_VIDEO_1_PATH, RAND_SEED, EXPORT_DATA_FLUXOPT, DATA_VIDEO_2_VOC_PATH, DATA_VIDEO_2_KEY_PATH
+from numpy import zeros, empty, arctan2, pi, asarray, save, linalg, load, unique, double
 from math import sqrt, pow
 import random as pif
+
+from stip import read_stip_file
 
 
 # TP4 PARTIE 1 HISTOGRAMME AVG -----------------------------------------------------------------------------------------
 
+# Renvoie le dataset, les N classes et la liste des fichiers avec en desc les histogrammes moyen
 def path_file_to_video_datasets_histiavg(paths_videos):
     listed_videos = os.listdir(paths_videos)
     pif.Random(RAND_SEED).shuffle(listed_videos)
@@ -26,6 +30,7 @@ def path_file_to_video_datasets_histiavg(paths_videos):
     return (X, y), n_classes, listed_videos
 
 
+# Calcule et renvoie pour chaque video son histogramme moyen
 def calc_dtsv_histoavg(paths_video):
     def tpb(data, prog):
         progressbar(prog)
@@ -34,8 +39,9 @@ def calc_dtsv_histoavg(paths_video):
     return [tpb(paths_video[k], k / (len(paths_video) - 1)) for k in range(len(paths_video))]
 
 
+# Calcule et renvoie pour une video l'histogramme moyen
 def calc_desc_avg_histogrames(path_video) -> []:
-    hs = calc_frames_histogramlmmes(path_video)
+    hs = calc_frames_histogrammes(path_video)
     hlen = len(hs[1])
     hsum = zeros(hlen)
     for h in hs:
@@ -44,7 +50,8 @@ def calc_desc_avg_histogrames(path_video) -> []:
     return hsum
 
 
-def calc_frames_histogramlmmes(path_video) -> []:
+# Calcule pour une video tout les histogrammes de couleur par image
+def calc_frames_histogrammes(path_video) -> []:
     video = vread(f"{DATA_VIDEO_1_PATH}/{path_video}")
     res = [calc_desc_histogramme(f) for f in video]
     return res
@@ -52,6 +59,7 @@ def calc_frames_histogramlmmes(path_video) -> []:
 
 # TP4 PARTIE 2 VISUALISATION FLUX OPTIQUES -----------------------------------------------------------------------------
 
+# Affiche l'image k d'une video
 def afficher_image_k(fo_rgb, k):
     img1 = fo_rgb[k] * 255
     img1 = img1.astype(int)
@@ -59,14 +67,17 @@ def afficher_image_k(fo_rgb, k):
     plt.imshow(img1)
 
 
+# Sauvegarde un numpy array correspondant a une video
 def save_video_numpyarray(arr, name):
     save(f"{EXPORT_DATA_FLUXOPT}/{name}.npy", arr)
 
 
+# Convertie une suite d'image HSV en une suite d'image RGB
 def conv_fo_hsv_2_fo_rgb(fo_hsv):
     return asarray([hsv2rgb(i) for i in fo_hsv])
 
 
+# Converti les flux optiques en images au format hsv
 def conv_optical_flux_2_hsv(optflx):
     flo_hsv = empty((optflx.shape[0], optflx.shape[1], optflx.shape[2], 3), 'float32')
     max_m = 0
@@ -101,6 +112,7 @@ def conv_optical_flux_2_hsv(optflx):
     return flo_hsv
 
 
+# Calcule les flux optique d'une video
 def calc_opticalflux(path_video) -> []:
     video_color = vread(f"{DATA_VIDEO_1_PATH}/{path_video}")
     video_wb = [rgb2gray(i) for i in video_color]
@@ -112,6 +124,9 @@ def calc_opticalflux(path_video) -> []:
     return my_reshape(asarray([opf_pb(k) for k in range(len(video_wb) - 1)]))
 
 
+# Un reshape qui me permet de passez de
+# idx_image, idx_tuple, idx_ligne, idx_colo) en (idx_image, idx_ligne, idx_colo, idx_tuple)
+# Avec idx_tuple = les infos du flux optique sur x et y
 def my_reshape(raw_optical_flux):
     print("\n\tLog: Reshape: in progress...")
     rof_shape = raw_optical_flux.shape
@@ -128,6 +143,7 @@ def my_reshape(raw_optical_flux):
 
 # TP4 PARTIE 3 FO ORIENTATIONS ET MAGNITUDE ----------------------------------------------------------------------------
 
+# Transforme les flux optiques en flux optique normaliser de 0 à 1
 def calc_fo_2_tuple(optflx):
     flo_om = zeros((optflx.shape[0], optflx.shape[1], optflx.shape[2], 3), 'int8')
     flo_om[..., 0] = (arctan2(optflx[..., 1], optflx[..., 0]) / pi * 180. + 180.).astype(int)
@@ -141,9 +157,69 @@ def extract_firstmagn_perclass():
 
 # TP5 PARTIE 2 CLASSIFICATION ------------------------------------------------------------------------------------------
 
+# Créé le dataset tout bo tout propre pour l'entrainement avec les descripteur HOG, HOF ou HOGHOF
+def path_file_to_video_datasets_hog_hof(paths_videos, ho="HOGHOF"):
+    listed_videos = os.listdir(paths_videos)
+    pif.Random(RAND_SEED).shuffle(listed_videos)
+    if ho == "HOG":
+        print("\tLog: Descripteurs choisie : HOG")
+        X = calc_dts_vecteur_freq(listed_videos, calc_desc_vecteur_freq_hog)
+    elif ho == "HOF":
+        print("\tLog: Descripteurs choisie : HOF")
+        X = calc_dts_vecteur_freq(listed_videos, calc_desc_vecteur_freq_hof)
+    else:
+        print("\tLog: Descripteurs choisie : HOGHOF")
+        X = calc_dts_vecteur_freq(listed_videos, calc_desc_vecteur_freq_hof)
+    print()
+    y_name = [fname.split("_")[0] for fname in listed_videos]
+    n_classes = list(set(y_name))
+    n_classes.sort()
+    y = [n_classes.index(n) for n in y_name]
+    return (X, y), n_classes, listed_videos
 
-def calc_vecteur_freq_hoghof(path_file, path_vocab):
-    pass
+
+# Calcule pour chaque fichier le descripteur correspondant avec desc = func(fichier[k]) avec k => [0,nb_fichier-1]
+def calc_dts_vecteur_freq(files_names, func):
+    descs = []
+    nb_file = len(files_names)
+    for k in range(nb_file):
+        descs.append(func(files_names[k]))
+        progressbar(k / (nb_file - 1))
+    return descs
+
+
+# Fonction qui calcule l'histogramme des vecteurs de fréquences pour HOGHOF
+def calc_desc_vecteur_freq_hoghof(file_name):
+    kp, desc = read_stip_file(f"{DATA_VIDEO_2_KEY_PATH}/{file_name.split('.')[0]}.key")
+    vocab = load(f"{DATA_VIDEO_2_VOC_PATH}/voc_hoghof_500.npy")
+    return calc_kmeans_histo(desc, vocab)
+
+
+# Fonction qui calcule l'histogramme des vecteurs de fréquences pour HOG
+def calc_desc_vecteur_freq_hog(file_name):
+    kp, desc = read_stip_file(f"{DATA_VIDEO_2_KEY_PATH}/{file_name.split('.')[0]}.key")
+    desc_hog = desc[:, :72]
+    vocab = load(f"{DATA_VIDEO_2_VOC_PATH}/voc_hog_500.npy")
+    return calc_kmeans_histo(desc_hog, vocab)
+
+
+# Fonction qui calcule l'histogramme des vecteurs de fréquences pour HOF
+def calc_desc_vecteur_freq_hof(file_name: str):
+    kp, desc = read_stip_file(f"{DATA_VIDEO_2_KEY_PATH}/{file_name.split('.')[0]}.key")
+    desc_hof = desc[:, 72:]
+    vocab = load(f"{DATA_VIDEO_2_VOC_PATH}/voc_hof_500.npy")
+    return calc_kmeans_histo(desc_hof, vocab)
+
+
+# Calcule histogramme correspondant au descripteur et au vocabulaire fournit
+def calc_kmeans_histo(desc, vocab):
+    kmeans = KMeans(n_clusters=5, random_state=42)
+    kmeans.fit(desc.astype(float))
+    kmeans.cluster_centers_ = vocab.astype(float)
+    pred = kmeans.predict(desc.astype(float))
+    count_n = unique(pred, return_counts=True)
+    histo = [0 if idx not in count_n[0] else count_n[1][list(count_n[0]).index(idx)] for idx in range(len(vocab))]
+    return histo
 
 
 def afficher_video_keypoint(path_file):

@@ -15,5 +15,3 @@ print("Log: Conversion des flux optique au format OM: in progress...")
 fo_om = calc_fo_2_tuple(fo)
 print(f"\tShape du flux optique OM: {fo_om.shape}")
 print("Log: Conversion des flux optique au format OM: done!")
-
-
