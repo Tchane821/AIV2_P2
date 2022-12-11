@@ -222,5 +222,13 @@ def calc_kmeans_histo(desc, vocab):
     return histo
 
 
-def afficher_video_keypoint(path_file):
-    pass
+def afficher_video_keypoint(path_video, path_keys, k_start, k_end):
+    video = vread(path_video)
+    plt.figure()
+    for k in range(k_start, k_end):
+        img_k = video[k]
+        kp, desc = read_stip_file(path_keys)
+        y = [y for y, _, t, _, _ in kp if t == k]
+        x = [x for _, x, t, _, _ in kp if t == k]
+        plt.imshow(img_k, cmap='gray', vmin=0, vmax=1)
+        plt.scatter(x, y, s=2)
