@@ -145,10 +145,36 @@ def my_reshape(raw_optical_flux):
 
 # Transforme les flux optiques en flux optique normaliser de 0 à 1
 def calc_fo_2_tuple(optflx):
-    flo_om = zeros((optflx.shape[0], optflx.shape[1], optflx.shape[2], 3), 'int8')
+    flo_om = zeros((optflx.shape[0], optflx.shape[1], optflx.shape[2], 2), 'int8')
     flo_om[..., 0] = (arctan2(optflx[..., 1], optflx[..., 0]) / pi * 180. + 180.).astype(int)
     flo_om[..., 1] = linalg.norm(optflx, axis=3, ord=2).astype(int)
     return flo_om
+
+
+# Calcule l'histogramme des magnitudes des flux optiques OM
+def calc_om_histo(fo):
+    ms = [t[0] for img in fo for l in img for t in l]  # Get all magnitude
+    ms.sort()  # trié
+    print(
+        f"\tLog: q1= {ms[int(len(ms) / 4 + 1)]}\tq3= {ms[int(3 * (len(ms) / 4 + 1))]}")  # Get 1er et 3 ème Quartile
+    return ms
+
+
+# Créé une figure qui correspond a un histogramme des valeurs fournit
+def afficher_om_histo(om_h, bins=32):
+    plt.figure()
+    plt.hist(om_h, bins=bins)
+
+
+# filtre les valeurs de magnitude et passe à 0 toutes les valeurs or des bornes sb et sh
+def filtered_fo_om(fo_om, sb, sh):
+    for idx_image in range(fo_om.shape[0]):
+        for idx_ligne in range(fo_om.shape[1]):
+            for idx_colo in range(fo_om.shape[2]):
+                if not sb <= fo_om[idx_image, idx_ligne, idx_colo, 0] <= sh:
+                    fo_om[idx_image, idx_ligne, idx_colo, 0] = 0
+    return fo_om
+
 
 
 def extract_firstmagn_perclass():
