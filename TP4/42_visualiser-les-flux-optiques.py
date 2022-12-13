@@ -2,7 +2,7 @@ import os
 
 import matplotlib.pyplot as plt
 
-from setup import DATA_VIDEO_1_PATH
+from setup import DATA_VIDEO_1_PATH, EXPORT_DATA_FLUXOPT
 from video_tools import calc_opticalflux, conv_optical_flux_2_hsv, conv_fo_hsv_2_fo_rgb, save_video_numpyarray, \
     afficher_image_k
 from numpy import load
@@ -27,8 +27,8 @@ for k in range(len(listed_video_path)):
     print("Log: Conversion de l'image HSV en RGB: done!")
 
     print("Log: Save images numpy format: in progress...")
-    save_video_numpyarray(fo_hsv, f"HSV_{listed_video_path[k]}")
-    save_video_numpyarray(fo_rgb, f"RGB_{listed_video_path[k]}")
+    save_video_numpyarray(fo_hsv, EXPORT_DATA_FLUXOPT, f"HSV_{listed_video_path[k]}")
+    save_video_numpyarray(fo_rgb, EXPORT_DATA_FLUXOPT, f"RGB_{listed_video_path[k]}")
     print("Log: Save images numpy format: done!")
 
     print(f"\n ----- Log: IMG {k + 1} / {len(listed_video_path)}: done! -----")

@@ -68,8 +68,8 @@ def afficher_image_k(fo_rgb, k):
 
 
 # Sauvegarde un numpy array correspondant a une video
-def save_video_numpyarray(arr, name):
-    save(f"{EXPORT_DATA_FLUXOPT}/{name}.npy", arr)
+def save_video_numpyarray(arr, path, name):
+    save(f"{path}/{name}.npy", arr)
 
 
 # Convertie une suite d'image HSV en une suite d'image RGB
@@ -152,8 +152,8 @@ def calc_fo_2_tuple(optflx):
 
 
 # Calcule l'histogramme des magnitudes des flux optiques OM
-def calc_om_histo(fo):
-    ms = [t[1] for img in fo for l in img for t in l]  # Get all magnitude
+def calc_om_histo(fo_om):
+    ms = [t[1] for img in fo_om for l in img for t in l]  # Get all magnitude
     print(f"\tLog: Magnitude Max: {max(ms)}\tMagnitude Min: {min(ms)}")
     ms.sort()  # trié
     print(
@@ -161,7 +161,7 @@ def calc_om_histo(fo):
     return ms
 
 
-# Créé une figure qui correspond a un histogramme des valeurs fournit
+# Créé une figure qui correspond à un histogramme des valeurs fournit
 def afficher_om_histo(om_h, bins=32):
     plt.figure()
     plt.hist(om_h, bins=bins)
@@ -177,12 +177,28 @@ def filtered_fo_om(fo_om, sb, sh):
     return fo_om
 
 
-def calc_histograme_om_frag():
-    pass
-
-
-def extract_firstmagn_perclass():
-    pass
+def calc_histogramme_om_frag(fo_om, bins=32):
+    mat_h = zeros((bins, bins), int)
+    print("\tLog: Filtrage magnitude a 0: in progress...")
+    oms = asarray([t for img in fo_om for l in img for t in l if t[1] != 0])  # get all tuple om with m not 0
+    print("\tLog: Filtrage magnitude a 0: done!")
+    # Orientation est sur 256 valeurs de -127 à 127
+    # Magnitude va de 0 à M max
+    m_max = max(oms[:, 1:].flatten())
+    # On souhaite 32 bins
+    # Pour chaque orientation, on a 256 valeurs divisées par 32 bins
+    bins_o_per_channel = int(256. / bins) + 1
+    # Idem pour la magnitude
+    bins_m_per_channel = int(m_max / bins) + 1
+    print("\tLog: remplissage de la matrcie histogramme: in progress...")
+    for idx_t in range(len(oms)):
+        progressbar(idx_t / (len(oms) - 1))
+        mat_h[
+            int((oms[idx_t][0] + 127) / bins_o_per_channel),
+            int((oms[idx_t][1]) / bins_m_per_channel)
+        ] += 1
+    print("\tLog: remplissage de la matrcie histogramme: done!")
+    return mat_h
 
 
 # TP5 PARTIE 2 CLASSIFICATION ------------------------------------------------------------------------------------------
