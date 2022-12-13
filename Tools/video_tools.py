@@ -153,7 +153,8 @@ def calc_fo_2_tuple(optflx):
 
 # Calcule l'histogramme des magnitudes des flux optiques OM
 def calc_om_histo(fo):
-    ms = [t[0] for img in fo for l in img for t in l]  # Get all magnitude
+    ms = [t[1] for img in fo for l in img for t in l]  # Get all magnitude
+    print(f"\tLog: Magnitude Max: {max(ms)}\tMagnitude Min: {min(ms)}")
     ms.sort()  # trié
     print(
         f"\tLog: q1= {ms[int(len(ms) / 4 + 1)]}\tq3= {ms[int(3 * (len(ms) / 4 + 1))]}")  # Get 1er et 3 ème Quartile
@@ -171,10 +172,13 @@ def filtered_fo_om(fo_om, sb, sh):
     for idx_image in range(fo_om.shape[0]):
         for idx_ligne in range(fo_om.shape[1]):
             for idx_colo in range(fo_om.shape[2]):
-                if not sb <= fo_om[idx_image, idx_ligne, idx_colo, 0] <= sh:
-                    fo_om[idx_image, idx_ligne, idx_colo, 0] = 0
+                if not sb <= fo_om[idx_image, idx_ligne, idx_colo, 1] <= sh:
+                    fo_om[idx_image, idx_ligne, idx_colo, 1] = 0
     return fo_om
 
+
+def calc_histograme_om_frag():
+    pass
 
 
 def extract_firstmagn_perclass():

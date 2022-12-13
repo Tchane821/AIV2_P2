@@ -22,14 +22,20 @@ if not os.path.exists(f"{EXPORT_DATA_FLUXOPT}/{name_file_tmp}.npy"):
     print(f"\tShape du flux optique OM: {fo_om.shape}")
     print("Log: Conversion des flux optique au format OM: done!")
     save_video_numpyarray(fo_om, name_file_tmp)
+else:
+    print("Log: Load Optical Flux au format OM: in progress...")
+    fo_om = load(f"{EXPORT_DATA_FLUXOPT}/{name_file_tmp}.npy")
+    print("Log: Load Optical Flux au format OM: done!")
 
-fo_om = load(f"{EXPORT_DATA_FLUXOPT}/{name_file_tmp}.npy")
-
+print("Log: Calcule des histogrammes: in progress...")
 histo = calc_om_histo(fo_om)
 afficher_om_histo(histo)
 plt.show()
+print("Log: Calcule des histogrammes: done!")
 
-seuil_haut = 0
-seuil_bas = 103
-
+print("Log: filtrage des flux optique: in progress...")
+seuil_bas = 2
+seuil_haut = 38
+print(f"\tLog: Smin= {seuil_bas}\t Smax= {seuil_haut}")
 fo_om_f = filtered_fo_om(fo_om, seuil_bas, seuil_haut)
+print("Log: filtrage des flux optique: done!")
